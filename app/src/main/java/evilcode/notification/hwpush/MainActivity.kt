@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnSendMessage.setOnClickListener { sendTestMessage() }
         binding.btnViewRecords.setOnClickListener { openMessageRecords() }
         binding.btnClearLog.setOnClickListener {
-            binding.etLog.text = ""
+            binding.etLog.text.clear()
         }
 
         binding.etLog.keyListener = null
