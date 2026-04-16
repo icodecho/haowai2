@@ -122,10 +122,8 @@ class MainActivity : AppCompatActivity() {
         binding.btnSendMessage.setOnClickListener { sendTestMessage() }
         binding.btnViewRecords.setOnClickListener { openMessageRecords() }
         binding.btnClearLog.setOnClickListener {
-            binding.etLog.text.clear()
+            binding.tvLog.text = ""
         }
-
-        binding.etLog.keyListener = null
 
         updateTokenDisplay()
         updatePushButtonState()
@@ -161,26 +159,18 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val bundle = intent.extras
-        if (bundle != null) {
-            val msgId = bundle.getString("msgId")
-            if (!msgId.isNullOrEmpty()) {
-                val title = bundle.getString("title") ?: ""
-                val body = bundle.getString("body") ?: ""
-                val data = bundle.getString("data") ?: ""
-
-                val record = MessageRecord(
-                    title = title,
-                    content = body,
-                    data = data,
-                    msgId = msgId,
-                    receiveTime = System.currentTimeMillis(),
-                    type = "通知消息"
-                )
-                MessageRecordManager.addRecord(this, record)
-                appendLog("通知消息已保存到记录: ${title.ifEmpty { msgId }}")
-                intent.removeExtra("msgId")
-            }
+        val cached = NotificationMessageCache.consume()
+        if (cached != null) {
+            val record = MessageRecord(
+                title = cached.first,
+                content = cached.second,
+                data = cached.third,
+                msgId = "",
+                receiveTime = System.currentTimeMillis(),
+                type = "通知消息"
+            )
+            MessageRecordManager.addRecord(this, record)
+            appendLog("通知消息已保存到记录: ${cached.first.ifEmpty { "通知消息" }}")
         }
     }
 
@@ -342,13 +332,8 @@ class MainActivity : AppCompatActivity() {
     private fun appendLog(log: String) {
         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
         val timeStr = timeFormat.format(Date())
-        binding.etLog.append("[$timeStr] $log\n")
-        binding.etLog.post {
-            val scrollAmount = binding.etLog.lineCount * binding.etLog.lineHeight - binding.etLog.height
-            if (scrollAmount > 0) {
-                binding.etLog.scrollTo(0, scrollAmount)
-            }
-        }
+        binding.tvLog.append("[$timeStr] $log\n")
+        binding.svLog.post { binding.svLog.fullScroll(View.FOCUS_DOWN) }
     }
 
     override fun onDestroy() {

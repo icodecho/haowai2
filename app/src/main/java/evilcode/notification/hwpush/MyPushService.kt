@@ -38,6 +38,8 @@ class MyPushService : HmsMessageService() {
 
         if (isDataMessage) {
             NotificationHelper.showDataMessageNotification(this, title, body, data, msgId)
+        } else {
+            NotificationMessageCache.put(title, body, data)
         }
 
         val intent = Intent(ACTION_PUSH_EVENT)
