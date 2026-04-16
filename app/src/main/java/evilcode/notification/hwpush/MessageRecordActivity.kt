@@ -90,6 +90,14 @@ class MessageRecordActivity : AppCompatActivity() {
     private fun showRecordDetail(record: MessageRecord) {
         val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val timeStr = timeFormat.format(Date(record.receiveTime))
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_message_detail, null)
+        val tvDetail = dialogView.findViewById<android.widget.TextView>(R.id.tv_detail)
+        val btnCopyTitle = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_copy_title)
+        val btnCopyContent = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_copy_content)
+        val btnCopyData = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_copy_data)
+        val btnCopyMsgId = dialogView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_copy_msg_id)
+
         val detail = """
             类型: ${record.type}
             标题: ${record.title}
@@ -98,13 +106,27 @@ class MessageRecordActivity : AppCompatActivity() {
             消息ID: ${record.msgId}
             接收时间: $timeStr
         """.trimIndent()
+        tvDetail.text = detail
 
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle("消息详情")
-            .setMessage(detail)
-            .setPositiveButton("复制") { _, _ -> copyRecord(record) }
-            .setNegativeButton("关闭", null)
-            .show()
+            .setView(dialogView)
+            .setPositiveButton("关闭", null)
+            .create()
+
+        btnCopyTitle.setOnClickListener { copyText("标题", record.title) }
+        btnCopyContent.setOnClickListener { copyText("内容", record.content) }
+        btnCopyData.setOnClickListener { copyText("数据", record.data) }
+        btnCopyMsgId.setOnClickListener { copyText("消息ID", record.msgId) }
+
+        dialog.show()
+    }
+
+    private fun copyText(label: String, text: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText(label, text)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, "${label}已复制", Toast.LENGTH_SHORT).show()
     }
 
     private fun copyRecord(record: MessageRecord) {
