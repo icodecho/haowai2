@@ -322,9 +322,7 @@ class MainActivity : AppCompatActivity() {
         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
         val timeStr = timeFormat.format(Date())
         binding.tvLog.append("[$timeStr] $log\n")
-        val scrollAmount = binding.tvLog.layout?.let {
-            binding.tvLog.lineCount * it.lineHeight - binding.tvLog.height
-        } ?: 0
+        val scrollAmount = binding.tvLog.lineCount * binding.tvLog.lineHeight - binding.tvLog.height
         if (scrollAmount > 0) {
             binding.tvLog.scrollTo(0, scrollAmount)
         }
