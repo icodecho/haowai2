@@ -55,7 +55,24 @@ class MainActivity : AppCompatActivity() {
                 }
                 "onMessageReceived" -> {
                     val msg = intent.getStringExtra("msg") ?: ""
+                    val title = intent.getStringExtra("title") ?: ""
+                    val body = intent.getStringExtra("body") ?: ""
+                    val data = intent.getStringExtra("data") ?: ""
+                    val msgId = intent.getStringExtra("msgId") ?: ""
+                    val isDataMessage = intent.getBooleanExtra("isDataMessage", false)
                     appendLog(msg)
+
+                    if (isDataMessage) {
+                        val record = MessageRecord(
+                            title = title,
+                            content = body,
+                            data = data,
+                            msgId = msgId,
+                            receiveTime = System.currentTimeMillis(),
+                            type = "透传消息"
+                        )
+                        MessageRecordManager.addRecord(this@MainActivity, record)
+                    }
                 }
                 "onMessageSent" -> {
                     val msg = intent.getStringExtra("msg") ?: ""
