@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
     private fun registerPushReceiver() {
         val filter = IntentFilter(MyPushService.ACTION_PUSH_EVENT)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(pushReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+            registerReceiver(pushReceiver, filter, 2)
         } else {
             registerReceiver(pushReceiver, filter)
         }
