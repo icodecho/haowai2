@@ -294,23 +294,22 @@
                             app:cornerRadius="8dp" />
                     </LinearLayout>
 
-                    <ScrollView
-                        android:id="@+id/sv_log"
+                    <EditText
+                        android:id="@+id/et_log"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_marginTop="8dp"
                         android:background="@color/log_background"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:id="@+id/tv_log"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:fontFamily="monospace"
-                            android:textColor="@color/log_text"
-                            android:textIsSelectable="true" />
-                    </ScrollView>
+                        android:padding="8dp"
+                        android:textSize="12sp"
+                        android:fontFamily="monospace"
+                        android:textColor="@color/log_text"
+                        android:inputType="none"
+                        android:textIsSelectable="true"
+                        android:gravity="bottom|start"
+                        android:scrollbars="vertical"
+                        android:overScrollMode="never"
+                        android:cursorVisible="false" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

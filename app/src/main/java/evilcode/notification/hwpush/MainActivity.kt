@@ -137,10 +137,10 @@ class MainActivity : AppCompatActivity() {
         binding.btnSendMessage.setOnClickListener { sendTestMessage() }
         binding.btnViewRecords.setOnClickListener { openMessageRecords() }
         binding.btnClearLog.setOnClickListener {
-            binding.tvLog.text = ""
+            binding.etLog.text = ""
         }
 
-        binding.tvLog.movementMethod = null
+        binding.etLog.keyListener = null
 
         updateTokenDisplay()
         updatePushButtonState()
@@ -320,8 +320,13 @@ class MainActivity : AppCompatActivity() {
     private fun appendLog(log: String) {
         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
         val timeStr = timeFormat.format(Date())
-        binding.tvLog.append("[$timeStr] $log\n")
-        binding.svLog.post { binding.svLog.fullScroll(View.FOCUS_DOWN) }
+        binding.etLog.append("[$timeStr] $log\n")
+        binding.etLog.post {
+            val scrollAmount = binding.etLog.lineCount * binding.etLog.lineHeight - binding.etLog.height
+            if (scrollAmount > 0) {
+                binding.etLog.scrollTo(0, scrollAmount)
+            }
+        }
     }
 
     override fun onDestroy() {
