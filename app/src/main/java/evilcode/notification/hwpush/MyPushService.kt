@@ -2,6 +2,8 @@ package evilcode.notification.hwpush
 
 import android.content.Intent
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.huawei.hms.push.HmsMessageService
 import com.huawei.hms.push.RemoteMessage
 import com.huawei.hms.push.SendException
@@ -29,12 +31,23 @@ class MyPushService : HmsMessageService() {
         val data = message.data
         val msgId = message.messageId ?: ""
         val notification = message.notification
-        val title = notification?.title ?: ""
-        val body = notification?.body ?: ""
-
-        Log.i(TAG, "getData: $data, msgId: $msgId, title: $title, body: $body")
+        var title = notification?.title ?: ""
+        var body = notification?.body ?: ""
 
         val isDataMessage = title.isEmpty() && body.isEmpty() && data.isNotEmpty()
+
+        if (isDataMessage && data.isNotEmpty()) {
+            try {
+                val mapType = object : TypeToken<Map<String, String>>() {}.type
+                val dataMap: Map<String, String> = Gson().fromJson(data, mapType)
+                title = dataMap["title"] ?: ""
+                body = dataMap["body"] ?: ""
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to parse data as JSON key-value pairs", e)
+            }
+        }
+
+        Log.i(TAG, "getData: $data, msgId: $msgId, title: $title, body: $body")
 
         if (isDataMessage) {
             NotificationHelper.showDataMessageNotification(this, title, body, data, msgId)
