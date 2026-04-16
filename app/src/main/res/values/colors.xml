@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF6200EE</color>
+    <color name="colorPrimaryDark">#FF3700B3</color>
+    <color name="colorAccent">#FF03DAC5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="log_background">#FFF5F5F5</color>
+    <color name="log_text">#FF333333</color>
+    <color name="tag_notification">#FF4CAF50</color>
+    <color name="tag_data_message">#FF2196F3</color>
+</resources>
