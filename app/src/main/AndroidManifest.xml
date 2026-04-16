@@ -37,7 +37,7 @@
 
         <activity
             android:name=".MessageRecordActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_message_record"
             android:parentActivityName=".MainActivity" />
 

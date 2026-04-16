@@ -34,7 +34,33 @@ class MessageRecordActivity : AppCompatActivity() {
         supportActionBar?.title = "消息记录"
 
         setupRecyclerView()
+        handleNotificationIntent(intent)
         loadRecords()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let { handleNotificationIntent(it) }
+    }
+
+    private fun handleNotificationIntent(intent: Intent) {
+        val notifTitle = intent.getStringExtra("notif_title")
+        val notifBody = intent.getStringExtra("notif_body")
+        val notifData = intent.getStringExtra("notif_data")
+        if (!notifTitle.isNullOrEmpty() || !notifBody.isNullOrEmpty() || !notifData.isNullOrEmpty()) {
+            val record = MessageRecord(
+                title = notifTitle ?: "",
+                content = notifBody ?: "",
+                data = notifData ?: "",
+                msgId = "",
+                receiveTime = System.currentTimeMillis(),
+                type = "通知消息"
+            )
+            MessageRecordManager.addRecord(this, record)
+            intent.removeExtra("notif_title")
+            intent.removeExtra("notif_body")
+            intent.removeExtra("notif_data")
+        }
     }
 
     private fun setupRecyclerView() {

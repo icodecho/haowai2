@@ -161,26 +161,6 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val notifTitle = intent.getStringExtra("notif_title")
-        val notifBody = intent.getStringExtra("notif_body")
-        val notifData = intent.getStringExtra("notif_data")
-        if (!notifTitle.isNullOrEmpty() || !notifBody.isNullOrEmpty() || !notifData.isNullOrEmpty()) {
-            val record = MessageRecord(
-                title = notifTitle ?: "",
-                content = notifBody ?: "",
-                data = notifData ?: "",
-                msgId = "",
-                receiveTime = System.currentTimeMillis(),
-                type = "通知消息"
-            )
-            MessageRecordManager.addRecord(this, record)
-            appendLog("通知消息已保存到记录: ${notifTitle?.ifEmpty { "通知消息" } ?: "通知消息"}")
-            intent.removeExtra("notif_title")
-            intent.removeExtra("notif_body")
-            intent.removeExtra("notif_data")
-            return
-        }
-
         val cached = NotificationMessageCache.consume()
         if (cached != null) {
             val record = MessageRecord(
