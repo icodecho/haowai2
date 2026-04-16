@@ -34,7 +34,9 @@ class MyPushService : HmsMessageService() {
 
         Log.i(TAG, "getData: $data, msgId: $msgId, title: $title, body: $body")
 
-        if (notification == null && data.isNotEmpty()) {
+        val isDataMessage = title.isEmpty() && body.isEmpty() && data.isNotEmpty()
+
+        if (isDataMessage) {
             NotificationHelper.showDataMessageNotification(this, title, body, data, msgId)
         }
 
@@ -46,7 +48,7 @@ class MyPushService : HmsMessageService() {
         intent.putExtra("body", body)
         intent.putExtra("data", data)
         intent.putExtra("msgId", msgId)
-        intent.putExtra("isDataMessage", notification == null)
+        intent.putExtra("isDataMessage", isDataMessage)
         sendBroadcast(intent)
     }
 

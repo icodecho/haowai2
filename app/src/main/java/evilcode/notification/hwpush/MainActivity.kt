@@ -3,6 +3,7 @@ package evilcode.notification.hwpush
 import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.ClipData
+import android.text.method.ScrollingMovementMethod
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -62,17 +63,15 @@ class MainActivity : AppCompatActivity() {
                     val isDataMessage = intent.getBooleanExtra("isDataMessage", false)
                     appendLog(msg)
 
-                    if (!isDataMessage) {
-                        val record = MessageRecord(
-                            title = title,
-                            content = body,
-                            data = data,
-                            msgId = msgId,
-                            receiveTime = System.currentTimeMillis(),
-                            type = "通知消息"
-                        )
-                        MessageRecordManager.addRecord(this@MainActivity, record)
-                    }
+                    val record = MessageRecord(
+                        title = title,
+                        content = body,
+                        data = data,
+                        msgId = msgId,
+                        receiveTime = System.currentTimeMillis(),
+                        type = if (isDataMessage) "透传消息" else "通知消息"
+                    )
+                    MessageRecordManager.addRecord(this@MainActivity, record)
                 }
                 "onMessageSent" -> {
                     val msg = intent.getStringExtra("msg") ?: ""
@@ -142,6 +141,8 @@ class MainActivity : AppCompatActivity() {
             binding.tvLog.text = ""
         }
 
+        binding.tvLog.movementMethod = ScrollingMovementMethod()
+
         updateTokenDisplay()
         updatePushButtonState()
     }
@@ -157,22 +158,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleNotificationClick(intent: Intent) {
         if (intent.getBooleanExtra("from_notification", false)) {
-            val title = intent.getStringExtra("notification_title") ?: ""
-            val body = intent.getStringExtra("notification_body") ?: ""
-            val data = intent.getStringExtra("notification_data") ?: ""
-            val msgId = intent.getStringExtra("notification_msgId") ?: ""
-
-            val record = MessageRecord(
-                title = title,
-                content = body,
-                data = data,
-                msgId = msgId,
-                receiveTime = System.currentTimeMillis(),
-                type = "透传消息"
-            )
-            MessageRecordManager.addRecord(this, record)
-            appendLog("透传消息已保存到记录: ${title.ifEmpty { data }}")
-
+            appendLog("点击了通知消息")
             intent.removeExtra("from_notification")
         }
     }
@@ -336,7 +322,12 @@ class MainActivity : AppCompatActivity() {
         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
         val timeStr = timeFormat.format(Date())
         binding.tvLog.append("[$timeStr] $log\n")
-        binding.svLog.post { binding.svLog.fullScroll(View.FOCUS_DOWN) }
+        val scrollAmount = binding.tvLog.layout?.let {
+            binding.tvLog.lineCount * it.lineHeight - binding.tvLog.height
+        } ?: 0
+        if (scrollAmount > 0) {
+            binding.tvLog.scrollTo(0, scrollAmount)
+        }
     }
 
     override fun onDestroy() {
