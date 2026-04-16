@@ -3,7 +3,6 @@ package evilcode.notification.hwpush
 import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.ClipData
-import android.text.method.ScrollingMovementMethod
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -141,7 +140,7 @@ class MainActivity : AppCompatActivity() {
             binding.tvLog.text = ""
         }
 
-        binding.tvLog.movementMethod = ScrollingMovementMethod()
+        binding.tvLog.movementMethod = null
 
         updateTokenDisplay()
         updatePushButtonState()
@@ -322,10 +321,7 @@ class MainActivity : AppCompatActivity() {
         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
         val timeStr = timeFormat.format(Date())
         binding.tvLog.append("[$timeStr] $log\n")
-        val scrollAmount = binding.tvLog.lineCount * binding.tvLog.lineHeight - binding.tvLog.height
-        if (scrollAmount > 0) {
-            binding.tvLog.scrollTo(0, scrollAmount)
-        }
+        binding.svLog.post { binding.svLog.fullScroll(View.FOCUS_DOWN) }
     }
 
     override fun onDestroy() {
