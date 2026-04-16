@@ -48,19 +48,23 @@ class MessageRecordActivity : AppCompatActivity() {
         val notifTitle = intent.getStringExtra("notif_title")
         val notifBody = intent.getStringExtra("notif_body")
         val notifData = intent.getStringExtra("notif_data")
+        val notifType = intent.getStringExtra("notif_type") ?: "通知消息"
         if (!notifTitle.isNullOrEmpty() || !notifBody.isNullOrEmpty() || !notifData.isNullOrEmpty()) {
-            val record = MessageRecord(
-                title = notifTitle ?: "",
-                content = notifBody ?: "",
-                data = notifData ?: "",
-                msgId = "",
-                receiveTime = System.currentTimeMillis(),
-                type = "通知消息"
-            )
-            MessageRecordManager.addRecord(this, record)
+            if (notifType != "透传消息") {
+                val record = MessageRecord(
+                    title = notifTitle ?: "",
+                    content = notifBody ?: "",
+                    data = notifData ?: "",
+                    msgId = "",
+                    receiveTime = System.currentTimeMillis(),
+                    type = notifType
+                )
+                MessageRecordManager.addRecord(this, record)
+            }
             intent.removeExtra("notif_title")
             intent.removeExtra("notif_body")
             intent.removeExtra("notif_data")
+            intent.removeExtra("notif_type")
         }
     }
 

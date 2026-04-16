@@ -36,14 +36,12 @@ object NotificationHelper {
         val displayTitle = title.ifEmpty { context.getString(R.string.app_name) }
         val displayBody = body.ifEmpty { data }
 
-        val intent = Intent(context, MainActivity::class.java).apply {
+        val intent = Intent(context, MessageRecordActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            action = Intent.ACTION_VIEW
-            putExtra("from_notification", true)
-            putExtra("notification_title", displayTitle)
-            putExtra("notification_body", displayBody)
-            putExtra("notification_data", data)
-            putExtra("notification_msgId", msgId)
+            putExtra("notif_title", displayTitle)
+            putExtra("notif_body", displayBody)
+            putExtra("notif_data", data)
+            putExtra("notif_type", "透传消息")
         }
 
         val pendingIntent = PendingIntent.getActivity(
