@@ -157,21 +157,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleNotificationClick(intent: Intent) {
         if (intent.getBooleanExtra("from_notification", false)) {
-            val title = intent.getStringExtra("notification_title") ?: ""
-            val body = intent.getStringExtra("notification_body") ?: ""
-            val data = intent.getStringExtra("notification_data") ?: ""
-            val msgId = intent.getStringExtra("notification_msgId") ?: ""
-
-            val record = MessageRecord(
-                title = title,
-                content = body,
-                data = data,
-                msgId = msgId,
-                receiveTime = System.currentTimeMillis(),
-                type = "透传消息"
-            )
-            MessageRecordManager.addRecord(this, record)
-            appendLog("透传消息已保存到记录: ${title.ifEmpty { data }}")
             intent.removeExtra("from_notification")
             return
         }
