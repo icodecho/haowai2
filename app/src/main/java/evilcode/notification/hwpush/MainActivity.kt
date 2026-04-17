@@ -276,6 +276,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 HmsMessaging.getInstance(this@MainActivity).turnOnPush().await()
+                isPushEnabled = true
                 appendLog("开启通知栏消息成功")
                 updatePushButtonState()
             } catch (e: Exception) {
@@ -289,6 +290,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 HmsMessaging.getInstance(this@MainActivity).turnOffPush().await()
+                isPushEnabled = false
                 appendLog("关闭通知栏消息成功")
                 updatePushButtonState()
             } catch (e: Exception) {
@@ -297,18 +299,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private var isPushEnabled = true
+
     private fun updatePushButtonState() {
-        lifecycleScope.launch {
-            try {
-                val isEnabled = withContext(Dispatchers.IO) {
-                    HmsMessaging.getInstance(this@MainActivity).isAutoInitEnabled
-                }
-                binding.btnTurnOnPush.isEnabled = !isEnabled
-                binding.btnTurnOffPush.isEnabled = isEnabled
-            } catch (e: Exception) {
-                Log.e(TAG, "updatePushButtonState failed", e)
-            }
-        }
+        binding.btnTurnOnPush.isEnabled = !isPushEnabled
+        binding.btnTurnOffPush.isEnabled = isPushEnabled
     }
 
     private fun setAutoInitEnabled(enable: Boolean) {
