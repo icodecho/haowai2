@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                     val token = intent.getStringExtra("token") ?: ""
                     if (token.isNotEmpty()) {
                         pushToken = token
+                        TokenManager.saveToken(this@MainActivity, token)
                         updateTokenDisplay()
                         appendLog("收到新Token: ${maskToken(token)}")
                     }
@@ -104,6 +105,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         NotificationHelper.createChannel(this)
+
+        pushToken = TokenManager.getToken(this)
 
         requestNotificationPermission()
         setupViews()
@@ -185,6 +188,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 if (!token.isNullOrEmpty()) {
                     pushToken = token
+                    TokenManager.saveToken(this@MainActivity, token)
                     updateTokenDisplay()
                     appendLog("获取Token成功")
                 } else {
@@ -209,6 +213,7 @@ class MainActivity : AppCompatActivity() {
                             HmsInstanceId.getInstance(this@MainActivity).deleteToken(APP_ID, "HCM")
                         }
                         pushToken = ""
+                        TokenManager.clearToken(this@MainActivity)
                         updateTokenDisplay()
                         appendLog("注销Token成功")
                     } catch (e: ApiException) {
