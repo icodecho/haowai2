@@ -277,8 +277,21 @@ class MainActivity : AppCompatActivity() {
             try {
                 HmsMessaging.getInstance(this@MainActivity).turnOnPush().await()
                 isPushEnabled = true
-                appendLog("开启通知栏消息成功")
+                appendLog("开启通知栏消息成功，正在重新获取Token...")
                 updatePushButtonState()
+                try {
+                    val token = withContext(Dispatchers.IO) {
+                        HmsInstanceId.getInstance(this@MainActivity).getToken(APP_ID, "HCM")
+                    }
+                    if (!token.isNullOrEmpty()) {
+                        pushToken = token
+                        TokenManager.saveToken(this@MainActivity, token)
+                        updateTokenDisplay()
+                        appendLog("重新获取Token成功")
+                    }
+                } catch (e: Exception) {
+                    appendLog("重新获取Token失败: ${e.message}")
+                }
             } catch (e: Exception) {
                 appendLog("开启通知栏消息失败: ${e.message}")
             }
